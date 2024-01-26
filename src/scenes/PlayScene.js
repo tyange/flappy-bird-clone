@@ -40,9 +40,10 @@ class PlayScene extends BaseScene {
       this.initialTime = 3;
       this.countDownText = this.add
         .text(
-          ...this.screenCenter,
-          "Fly in: " + this.initialTime,
-          this.fontOptions
+          this.screenCenter[0],
+          this.screenCenter[1],
+          "Fly in: " + String(this.initialTime),
+          this.fontOptions,
         )
         .setOrigin(0.5);
       this.timedEvent = this.time.addEvent({
@@ -52,10 +53,6 @@ class PlayScene extends BaseScene {
         loop: true,
       });
     });
-  }
-
-  createBG() {
-    this.add.image(0, 0, "sky").setOrigin(0);
   }
 
   createBird() {
@@ -133,14 +130,14 @@ class PlayScene extends BaseScene {
   placePipe(uPipe, lPipe) {
     const rightMostX = this.getRightMostPipe();
     const pipeVerticalDistance = Phaser.Math.Between(
-      ...this.pipeVerticalDistanceRange
+      ...this.pipeVerticalDistanceRange,
     );
     const pipeVerticalPosition = Phaser.Math.Between(
-      0 + 20,
-      this.config.height - 20 - pipeVerticalDistance
+      20,
+      this.config.height - 20 - pipeVerticalDistance,
     );
     const pipeHorizontalDistance = Phaser.Math.Between(
-      ...this.pipeHorizontalDistanceRange
+      ...this.pipeHorizontalDistanceRange,
     );
 
     uPipe.x = rightMostX + pipeHorizontalDistance;
