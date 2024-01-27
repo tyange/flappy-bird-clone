@@ -1,4 +1,3 @@
-
 node_modules
 build
 # Mac Files
@@ -81,3 +80,5 @@ temp/
 
 dist/
 build/
+
+.idea
