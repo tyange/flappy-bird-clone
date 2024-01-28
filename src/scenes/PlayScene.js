@@ -45,7 +45,7 @@ class PlayScene extends BaseScene {
         )
         .setOrigin(0.5);
 
-      this.timedEvent = this.time.addEvent({
+      this.countdownTimedEvent = this.time.addEvent({
         delay: 1000,
         callback: this.countDown,
         callbackScope: this,
@@ -60,7 +60,7 @@ class PlayScene extends BaseScene {
     if (this.initialTime <= 0) {
       this.countDownText.setText("");
       this.physics.resume();
-      this.timedEvent.remove();
+      this.countdownTimedEvent.remove();
     }
   }
 
@@ -118,9 +118,9 @@ class PlayScene extends BaseScene {
     this.pauseButton.on("pointerdown", () => {
       this.physics.pause();
       this.scene.pause();
-      if (this.timedEvent) {
+      if (this.countdownTimedEvent) {
         this.countDownText.setText("");
-        this.timedEvent.remove();
+        this.countdownTimedEvent.remove();
       }
       this.scene.launch("PauseScene");
     });
