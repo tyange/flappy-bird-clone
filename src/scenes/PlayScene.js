@@ -19,6 +19,7 @@ class PlayScene extends BaseScene {
 
   create() {
     super.create();
+    this.isGameOver = false;
     this.createBird();
     this.createPipes();
     this.createColliders();
@@ -34,7 +35,20 @@ class PlayScene extends BaseScene {
   }
 
   listenToEvents() {
-    this.events.on("resume", () => {
+    if (this.pauseEvent) {
+      return;
+    }
+
+    this.pauseEvent = this.events.on("resume", () => {
+      if (this.isGameOver) {
+        return;
+      }
+
+      if (this.countdownTimedEvent) {
+        this.countDownText.setText("");
+        this.countdownTimedEvent.remove();
+      }
+
       this.initialTime = 3;
       this.countDownText = this.add
         .text(
@@ -115,15 +129,13 @@ class PlayScene extends BaseScene {
       .setScale(3)
       .setOrigin(1);
 
-    this.pauseButton.on("pointerdown", () => {
-      this.physics.pause();
-      this.scene.pause();
-      if (this.countdownTimedEvent) {
-        this.countDownText.setText("");
-        this.countdownTimedEvent.remove();
-      }
-      this.scene.launch("PauseScene");
-    });
+    this.pauseButton.on("pointerdown", () => this.launchPauseScene());
+  }
+
+  launchPauseScene() {
+    this.physics.pause();
+    this.scene.pause();
+    this.scene.launch("PauseScene");
   }
 
   handleInputs() {
@@ -194,6 +206,7 @@ class PlayScene extends BaseScene {
   }
 
   gameOver() {
+    this.isGameOver = true;
     this.physics.pause();
     this.bird.setTint(0xe01414);
 
@@ -202,6 +215,7 @@ class PlayScene extends BaseScene {
     this.time.addEvent({
       delay: 1000,
       callback: () => {
+        this.isGameOver = false;
         this.scene.restart();
       },
       loop: false,
