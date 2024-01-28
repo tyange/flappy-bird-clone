@@ -8,8 +8,6 @@ class PlayScene extends BaseScene {
 
     this.bird = null;
     this.pipes = null;
-    this.pipeHorizontalDistance = 0;
-
     this.pipeVerticalDistanceRange = [150, 250];
     this.pipeHorizontalDistanceRange = [500, 550];
 
@@ -46,13 +44,24 @@ class PlayScene extends BaseScene {
           this.fontOptions,
         )
         .setOrigin(0.5);
+
       this.timedEvent = this.time.addEvent({
         delay: 1000,
-        callback: () => console.log(this.initialTime--),
+        callback: this.countDown,
         callbackScope: this,
         loop: true,
       });
     });
+  }
+
+  countDown() {
+    this.initialTime--;
+    this.countDownText.setText("Fly in: " + String(this.initialTime));
+    if (this.initialTime <= 0) {
+      this.countDownText.setText("");
+      this.physics.resume();
+      this.timedEvent.remove();
+    }
   }
 
   createBird() {
@@ -100,13 +109,13 @@ class PlayScene extends BaseScene {
   }
 
   createPause() {
-    const pauseButton = this.add
+    this.pauseButton = this.add
       .image(this.config.width - 10, this.config.height - 10, "pause")
       .setInteractive()
       .setScale(3)
       .setOrigin(1);
 
-    pauseButton.on("pointerdown", () => {
+    this.pauseButton.on("pointerdown", () => {
       this.physics.pause();
       this.scene.pause();
       this.scene.launch("PauseScene");
