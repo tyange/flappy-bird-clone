@@ -15,6 +15,8 @@ class PlayScene extends BaseScene {
 
     this.score = 0;
     this.scoreText = "";
+
+    this.isPaused = false;
   }
 
   create() {
@@ -72,6 +74,7 @@ class PlayScene extends BaseScene {
     this.initialTime--;
     this.countDownText.setText("Fly in: " + String(this.initialTime));
     if (this.initialTime <= 0) {
+      this.isPaused = false;
       this.countDownText.setText("");
       this.physics.resume();
       this.countdownTimedEvent.remove();
@@ -123,6 +126,7 @@ class PlayScene extends BaseScene {
   }
 
   createPause() {
+    this.isPaused = false;
     this.pauseButton = this.add
       .image(this.config.width - 10, this.config.height - 10, "pause")
       .setInteractive()
@@ -133,6 +137,7 @@ class PlayScene extends BaseScene {
   }
 
   launchPauseScene() {
+    this.isPaused = true;
     this.physics.pause();
     this.scene.pause();
     this.scene.launch("PauseScene");
@@ -244,6 +249,9 @@ class PlayScene extends BaseScene {
   }
 
   flap() {
+    if (this.isPaused) {
+      return;
+    }
     this.bird.body.velocity.y = -this.flapVelocity;
   }
 
