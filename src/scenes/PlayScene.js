@@ -144,6 +144,10 @@ class PlayScene extends BaseScene {
   }
 
   checkGameStatus() {
+    if (this.isGameOver) {
+      return;
+    }
+
     if (
       this.bird.getBounds().bottom >= this.config.height ||
       this.bird.y <= 0
@@ -212,13 +216,30 @@ class PlayScene extends BaseScene {
 
     this.saveBestScore();
 
+    this.initialTime = 3;
+    this.countDownText = this.add
+      .text(
+        this.screenCenter[0],
+        this.screenCenter[1],
+        "Game Over, Re-Fly in: " + String(this.initialTime),
+        this.fontOptions,
+      )
+      .setOrigin(0.5);
+
     this.time.addEvent({
       delay: 1000,
       callback: () => {
-        this.isGameOver = false;
-        this.scene.restart();
+        this.initialTime--;
+        this.countDownText.setText(
+          "Game Over, Re-Fly in: " + String(this.initialTime),
+        );
+        if (this.initialTime <= 0) {
+          this.countDownText.setText("");
+          this.scene.restart();
+        }
       },
-      loop: false,
+      callbackScope: this,
+      loop: true,
     });
   }
 
