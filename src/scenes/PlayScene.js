@@ -8,8 +8,6 @@ class PlayScene extends BaseScene {
 
     this.bird = null;
     this.pipes = null;
-    this.pipeVerticalDistanceRange = [150, 250];
-    this.pipeHorizontalDistanceRange = [500, 550];
 
     this.flapVelocity = 300;
 
@@ -17,9 +15,26 @@ class PlayScene extends BaseScene {
     this.scoreText = "";
 
     this.isPaused = false;
+
+    this.currentDifficulty = "easy";
+    this.difficulties = {
+      easy: {
+        pipeVerticalDistanceRange: [150, 200],
+        pipeHorizontalDistanceRange: [300, 350],
+      },
+      normal: {
+        pipeVerticalDistanceRange: [140, 190],
+        pipeHorizontalDistanceRange: [280, 330],
+      },
+      hard: {
+        pipeVerticalDistanceRange: [120, 170],
+        pipeHorizontalDistanceRange: [250, 310],
+      },
+    };
   }
 
   create() {
+    this.currentDifficulty = "easy";
     super.create();
     this.isGameOver = false;
     this.createBird();
@@ -162,16 +177,17 @@ class PlayScene extends BaseScene {
   }
 
   placePipe(uPipe, lPipe) {
+    const difficulty = this.difficulties[this.currentDifficulty];
     const rightMostX = this.getRightMostPipe();
     const pipeVerticalDistance = Phaser.Math.Between(
-      ...this.pipeVerticalDistanceRange,
+      ...difficulty.pipeVerticalDistanceRange,
     );
     const pipeVerticalPosition = Phaser.Math.Between(
       20,
       this.config.height - 20 - pipeVerticalDistance,
     );
     const pipeHorizontalDistance = Phaser.Math.Between(
-      ...this.pipeHorizontalDistanceRange,
+      ...difficulty.pipeHorizontalDistanceRange,
     );
 
     uPipe.x = rightMostX + pipeHorizontalDistance;
@@ -222,11 +238,19 @@ class PlayScene extends BaseScene {
     this.saveBestScore();
 
     this.initialTime = 3;
+    this.gameOverText = this.add
+      .text(
+        this.screenCenter[0],
+        this.screenCenter[1] - 40,
+        "Game Over",
+        this.fontOptions,
+      )
+      .setOrigin(0.5);
     this.countDownText = this.add
       .text(
         this.screenCenter[0],
         this.screenCenter[1],
-        "Game Over, Re-Fly in: " + String(this.initialTime),
+        "Fly in: " + String(this.initialTime),
         this.fontOptions,
       )
       .setOrigin(0.5);
@@ -235,10 +259,9 @@ class PlayScene extends BaseScene {
       delay: 1000,
       callback: () => {
         this.initialTime--;
-        this.countDownText.setText(
-          "Game Over, Re-Fly in: " + String(this.initialTime),
-        );
+        this.countDownText.setText("Fly in: " + String(this.initialTime));
         if (this.initialTime <= 0) {
+          this.gameOverText.setText("");
           this.countDownText.setText("");
           this.scene.restart();
         }

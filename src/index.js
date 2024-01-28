@@ -6,7 +6,7 @@ import PlayScene from "./scenes/PlayScene";
 import ScoreScene from "./scenes/ScoreScene";
 import PauseScene from "./scenes/PauseScene";
 
-const WIDTH = 800;
+const WIDTH = 400;
 const HEIGHT = 600;
 const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 
@@ -24,8 +24,6 @@ const config = {
   // WebGL (Web graphics library) JS Api for rendering 2D and 3D graphics
   type: Phaser.AUTO,
   ...SHARED_CONFIG,
-  width: 800,
-  height: 600,
   physics: {
     // Arcade physics plugin, manages physics simulation
     default: "arcade",
